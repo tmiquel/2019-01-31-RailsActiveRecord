@@ -7,13 +7,21 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+puts 'Effacement de toutes les bases de données'
+puts '-' * 50
+puts
+City.delete_all
+Doctor.delete_all
+Patient.delete_all
+Appointment.delete_all
+Diploma.delete_all
 
 specialty_array = ['Family Physician', 'Internal Medicine Physician', 'Pediatrician',
                    'Gynecologist', 'Surgeon']
 puts
 puts '-' * 50
 puts 'Création de 10 villes, patients et médecins supplementaires...'
-puts "Les 'specialty' sont parmi #{specialty_array.join(', ')}"
+puts "Créations  de 5 'specialty' : #{specialty_array.join(', ')}"
 puts '-' * 50
 puts
 
@@ -21,11 +29,14 @@ puts
   City.create(name: Faker::Address.city)
 end
 
+specialty_array.each do |specialty|
+  Specialty.create(name: specialty)
+end
+
 10.times do
   offset = rand(City.count)
   Doctor.create(first_name: Faker::Name.first_name,
                 last_name: Faker::Name.last_name,
-                specialty: specialty_array.sample,
                 zip_code: Faker::Address.zip_code,
                 city: City.offset(offset).first)
   Patient.create(first_name: Faker::Name.first_name,
@@ -62,9 +73,11 @@ puts '=' * 50
   offset = rand(Doctor.count)
   offset_patient = rand(Patient.count)
   offset_app = rand(Appointment.count)
+  offset_specialty = rand(Specialty.count)
   pa = Patient.offset(offset_patient).first
   d = Doctor.offset(offset).first
   a = Appointment.offset(offset_app).first
+  spe = Specialty.offset(offset_specialty).first
   puts '-' * 50
   puts 'Docteur tiré au sort'
   puts d
@@ -73,6 +86,13 @@ puts '=' * 50
   unless d.patients.empty?
     puts "Premier patient : first name: #{d.patients.first.first_name}, last name #{d.patients.first.last_name}, city #{d.patients.first.city}  "
   end
+  puts "Specialty: #{d.specialty.name}"
+  puts
+  puts '-' * 50
+  puts 'Specialty tirée au sort'
+  puts spe
+  puts
+  puts "Nombre de docteurs : #{spe.doctors.length}"
   puts
   puts '-' * 50
   puts 'Patient tiré au sort'
@@ -109,4 +129,11 @@ puts
 puts 'Appointments'
 tp Appointment.last(3)
 puts
+puts 'Diploma (Relation Specialty - Docteur'
+tp Diploma.last(3)
+puts
+puts 'Specialty'
+tp Specialty.last(3)
+puts
+
 puts 'END'

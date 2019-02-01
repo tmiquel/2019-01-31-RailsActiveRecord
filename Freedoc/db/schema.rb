@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_190_201_061_558) do
+ActiveRecord::Schema.define(version: 20_190_201_073_327) do
   create_table 'appointments', force: :cascade do |t|
     t.integer 'doctor_id'
     t.integer 'patient_id'
@@ -29,10 +29,18 @@ ActiveRecord::Schema.define(version: 20_190_201_061_558) do
     t.datetime 'updated_at', null: false
   end
 
+  create_table 'diplomas', force: :cascade do |t|
+    t.integer 'specialty_id'
+    t.integer 'recipient_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['recipient_id'], name: 'index_diplomas_on_recipient_id'
+    t.index ['specialty_id'], name: 'index_diplomas_on_specialty_id'
+  end
+
   create_table 'doctors', force: :cascade do |t|
     t.string 'first_name'
     t.string 'last_name'
-    t.string 'specialty'
     t.string 'zip_code'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
@@ -47,5 +55,11 @@ ActiveRecord::Schema.define(version: 20_190_201_061_558) do
     t.datetime 'updated_at', null: false
     t.integer 'city_id'
     t.index ['city_id'], name: 'index_patients_on_city_id'
+  end
+
+  create_table 'specialties', force: :cascade do |t|
+    t.string 'name'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 end
